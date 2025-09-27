@@ -60,7 +60,7 @@ class ataque_armado:
             return {
             "Habilidade": "Espada Dupla",
             "Alcance": "Pessoal",
-            "Descrição": "Quer duas? Então vai tomando FIRME",
+            "Descrição": "Quer duas? Então vai tomando FIRME (CRIT)",
             "Rolagem de Ataque": acerto,
             "Rolagens": crit_rols,
             "Dano": sum(crit_rols)+12,
