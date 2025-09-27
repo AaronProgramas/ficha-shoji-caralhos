@@ -680,8 +680,8 @@ per_com_outros7 = ['Ferreiro']
 per_kukan = adicional_kukan.get(kukan_no_kyoka_atual, 0)
 per_com_kukan = ['Luta']
 
-st.sidebar.subheader('Debugging')
-st.sidebar.write(per_kukan)
+#st.sidebar.subheader('Debugging')
+#st.sidebar.write(per_kukan)
 
 # 1) mapa tolerante de rótulos de atributo -> modificador
 attr_mod_map = {
