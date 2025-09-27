@@ -476,85 +476,9 @@ def cast_convergencia():
 	"Dano (3d8)": sum(rols)+mod(Int),
 	}
 
-def cast_sangue_perfurante():
-	rols = dado(8, 8)
-	acerto = dado(20)[0]+feiticaria
-	crit_threshold = 20+feiticaria
-	crit_rols = dado(8,16)
-	if acerto >= crit_threshold:
-		return {
-		"Habilidade": "Sangue Perfurante",
-        "Custo": 4,
-		"Alcance": "18m",
-        "Descrição": "Perfura com sangue mt potente",
-		"Rolagem de Ataque": str(acerto)+"(CRIT)",
-		"Rolagens": crit_rols,
-		"Dano (16d8)": sum(crit_rols)+mod(Int),
-		}
-	else:
-		return {
-		"Habilidade": "Sangue Perfurante",
-        "Custo": 4,
-		"Alcance": "18m",
-        "Descrição": "Perfura com sangue",
-		"Rolagem de Ataque": acerto,
-		"Rolagens": rols,
-		"Dano (8d8)": sum(rols)+mod(Int),
-		}
-    
-def cast_poca_de_sangue():
-	rols = dado(8, 7)
-	rodadas = dado(2)[0]+1
-	return {
-	"Habilidade": "Byakuren, Chi Damari",
-    "Custo": 4,
-	"Alcance": "18m",
-	"CD do TR": cd_do_tr,
-    "Descrição": "Cria uma poça de sangue que dura "+ str(rodadas)+" rodadas",
-	"Rolagens": rols,
-	"Dano (3d8)": sum(rols)+mod(Int),
-	}
-
-def cast_poca_de_sangue_permanencia():
-	rols = dado(12, 4)
-	return {
-	"Habilidade": "Byakuren, Chi Damari",
-	"Alcance": "Um quadrado (1,5m)",
-	"CD do TR": cd_do_tr,
-    "Descrição": "Com a poça de sangue ainda no chão, tu vai tomando",
-	"Rolagens": rols,
-	"Dano (4d12)": sum(rols)+mod(Int),
-	}
-
-def cast_turbilhao_de_sangue():
-	rols = dado(8, 3)
-	return {
-	"Habilidade": "Turbilhão de Sangue",
-	"Alcance": "6m, raio 3m",
-	"CD do TR": cd_do_tr,
-    "Descrição": "Liga o liquidificador",
-	"Rolagens": rols,
-	"Dano (7d8)": sum(rols)+mod(Int),
-	}
-
-def cast_sangramento():
-	rols = dado(8, 2)
-	return {
-	"Habilidade": "Sangramento - Turbilhão",
-	#"Alcance": "-",
-	"CD do TR": cd_do_tr,
-    "Descrição": "Sangra legal até passar no teste",
-	"Rolagens": rols,
-	"Dano (7d8)": sum(rols)+mod(Int),
-	}
-
-
-
-
 # ---------------------------
 # LAYOUT
 # ---------------------------
-#st.title("Ficha - Ryuzaki Kamo")
 
 # ----- Colunas principais
 col_ficha, col_pericias, col_habs = st.columns([2, 3, 2], gap="large")
@@ -756,8 +680,8 @@ per_com_outros7 = ['Ferreiro']
 per_kukan = adicional_kukan.get(kukan_no_kyoka_atual, 0)
 per_com_kukan = ['Luta']
 
-#st.sidebar.subheader('Debugging')
-#st.sidebar.write(per_kukan)
+st.sidebar.subheader('Debugging')
+st.sidebar.write(per_kukan)
 
 # 1) mapa tolerante de rótulos de atributo -> modificador
 attr_mod_map = {
