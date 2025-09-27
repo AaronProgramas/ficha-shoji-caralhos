@@ -32,8 +32,6 @@ def rolar_pericia(nome: str, total: int) -> dict:
     }
 
 def pericias_ui(df):
-    st.subheader('Tabela Perícias')
-
     col_pericia = "Perícia" if "Perícia" in df.columns else "Pericia"
 
     # divide o df igualmente em 2 blocos
@@ -270,6 +268,13 @@ postura_do_sol = {
      "Acerto": 2,
      "Dano": 1234, #Precisa pegar qual o dado de dano da arma (mudar)
 }
+
+kukan = ['Nenhum','Kukan no Kyoka', 'Kukan no Kyoka - Ritual']
+adicional_kukan = {
+     'Nenhum': 0,
+     'Kukan no Kyoka': 7,
+     'Kukan no Kyoka - Ritual': 16,
+}
 armas = [
 'Espada Gancho (G 4)',
 'Espada Dupla (G 4)',
@@ -313,10 +318,12 @@ def cast_ataque_armado():
     arma = arma_atual
     postura = postura_atual
     estilo = estilo_oculto_atual
+    kukan_no_kyoka = kukan_no_kyoka_atual
 
-    # 1) bônus do estilo oculto (mesmo valor em ataque e dano)
+    # 1) bônus do estilo oculto e kukan no kyoka (mesmo valor em ataque e dano)
     bonus_estilo = adicional_estilo_oculto.get(estilo, 0)
-    bonus_ataque = bonus_estilo
+    bonus_kukan = adicional_kukan.get(kukan_no_kyoka, 0)
+    bonus_ataque = bonus_estilo+bonus_kukan
     bonus_dano_flat = bonus_estilo
 
     # 2) postura
@@ -345,6 +352,7 @@ def cast_ataque_armado():
     res["Postura"] = postura
     res["Estilo Oculto"] = estilo
     res["Bônus Estilo (ataque/dano)"] = bonus_estilo
+    res['Kukan no Kyoka'] = bonus_kukan
     if postura == 'Postura do Sol':
         res["Bônus Postura (ataque)"] = 2
         res["Dados extras de dano"] = f"+1d{faces}" if faces else "+1 dado (definir faces)"
@@ -541,64 +549,6 @@ def cast_sangramento():
 	}
 
 
-# Perícias - ETL
-
-df = pd.read_csv('pericias.csv')
-
-
-
-# Perícias com Maestria
-per_com_maestria = ['Atletismo', 'Luta', 'Pontaria','Fortitude', 'Integridade','Percepção', 'Vontade','Astúcia', 'Feitiçaria', 'Ferreiro', 'Artesão']
-per_com_especializacao = ['Fortitude', 'Feitiçaria', 'Ferreiro']
-per_outrosmenos6 = -6
-per_com_outrosmenos6 = ['Furtividade']
-per_outrosmenos4 = -4
-per_com_outrosmenos4 = ['Reflexos']
-per_outrosmenos2 = -2
-per_com_outrosmenos2 = ['Acrobacia', 'Prestidigitação']
-per_outros2 = 2
-per_com_outros2 = ['Fortitude', 'Feitiçaria', 'Pontaria']
-per_outros4 = 4
-per_com_outros4 = ['Atletismo', 'Luta']
-per_outros6 = 6
-per_com_outros6 = ['Artesão']
-per_outros7 = 7
-per_com_outros7 = ['Ferreiro']
-
-
-# 1) mapa tolerante de rótulos de atributo -> modificador
-attr_mod_map = {
-    "for": mod(For), "força": mod(For), "forca": mod(For), "str": mod(For),
-    "des": mod(Des), "dex": mod(Des), "destreza": mod(Des),
-    "con": mod(Con), "constituição": mod(Con), "constituicao": mod(Con),
-    "int": mod(Int), "inteligência": mod(Int), "inteligencia": mod(Int),
-    "sab": mod(Sab), "sabedoria": mod(Sab),
-    "car": mod(Car), "carisma": mod(Car),
-}
-
-# 2) normaliza nomes de colunas (com ou sem acento)
-col_pericia = "Pericia" if "Pericia" in df.columns else "Pericia"
-
-# 3) componentes
-df["ModAtrib"] = df["Atributo"].map(lambda s: attr_mod_map.get(str(s).strip().lower(), 0))
-df["LvlHalf"]  = nivel // 2
-df["Maestria"] = np.where(df[col_pericia].isin(per_com_maestria), maestria, 0)
-df['Especializacao'] = np.where(df[col_pericia].isin(per_com_especializacao), maestria//2, 0)
-df["Outros2"]   = np.where(df[col_pericia].isin(per_com_outros2), per_outros2, 0)
-df["Outros4"]   = np.where(df[col_pericia].isin(per_com_outros4), per_outros4, 0)
-df["Outros6"]   = np.where(df[col_pericia].isin(per_com_outros6), per_outros6, 0)
-df["Outros7"]   = np.where(df[col_pericia].isin(per_com_outros7), per_outros7, 0)
-df["Outrosmenos6"]   = np.where(df[col_pericia].isin(per_com_outrosmenos6), per_outrosmenos6, 0)
-df["Outrosmenos4"]   = np.where(df[col_pericia].isin(per_com_outrosmenos4), per_outrosmenos4, 0)
-df["Outrosmenos2"]   = np.where(df[col_pericia].isin(per_com_outrosmenos2), per_outrosmenos2, 0)
-
-
-# 4) total final
-df["Total"] = df["ModAtrib"] + df["LvlHalf"] + df["Maestria"] + df['Especializacao'] + df["Outros2"] + df["Outros4"] + df["Outros6"] + df["Outros7"]+ df["Outrosmenos6"]+ df["Outrosmenos4"]+ df["Outrosmenos2"]
-
-
-# Perícia da porrada
-feiticaria = int(df.loc[df["Pericia"] == "Feitiçaria", "Total"].values[0])
 
 
 # ---------------------------
@@ -617,11 +567,6 @@ st.sidebar.write('')
 st.sidebar.write('O literal maior assassino do mundo Jujutsu.')
 
 
-# ----- Col Pericias
-with col_pericias:
-    pericias_ui(df)
-
-
 # ----- Coluna Habilidades
 
 
@@ -633,6 +578,9 @@ def escolher_estilo_oculto(estilo_oculto: list) -> str:
 
 def escolher_arma(armas: list) -> str:
      return st.selectbox(label='Armas', options=armas, key='arma_selecionada')
+
+def escolher_kukan_no_kyoka(kukan: list) -> str:
+     return st.selectbox(label='Kukan no Kyoka', label_visibility="visible", options=kukan, key='kukan_no_kyoka_atual')
 
 def toggle_golpe_descendente(default=False) -> bool:
     return st.checkbox(label='Golpe Descendente',
@@ -652,6 +600,13 @@ def select_ca_outros(default: int = 0, min_value: int = -50, max_value: int = 50
         format="%d",
     )
 
+with col_pericias:
+    per1, per2 = st.columns([5,2])
+    with per1:
+        st.subheader('Perícias')
+    with per2:
+        kukan_no_kyoka_atual = escolher_kukan_no_kyoka(kukan)
+
 with col_habs:
     st.subheader("Buffs/Armas")
     # Botoes e os krl
@@ -668,6 +623,8 @@ with col_habs:
     b31, b32 = st.columns(2)
     with b31:
         golpe_descendente_atual = toggle_golpe_descendente(default=False)
+#    with b32:
+#        kukan_no_kyoka_atual = escolher_kukan_no_kyoka(kukan)
     
     st.subheader('Habilidades')
 
@@ -772,8 +729,73 @@ with col_ficha:
     else:
         st.caption("Sem rolagens ainda. Lance uma habilidade!")
 
-#st.sidebar.subheader('Debugging')
-#st.sidebar.write('postura atual: '+str(postura_atual))
+
+
+# Perícias - ETL
+df = pd.read_csv('pericias.csv')
+
+
+
+# Perícias com Maestria
+per_com_maestria = ['Atletismo', 'Luta', 'Pontaria','Fortitude', 'Integridade','Percepção', 'Vontade','Astúcia', 'Feitiçaria', 'Ferreiro', 'Artesão']
+per_com_especializacao = ['Fortitude', 'Feitiçaria', 'Ferreiro']
+per_outrosmenos6 = -6
+per_com_outrosmenos6 = ['Furtividade']
+per_outrosmenos4 = -4
+per_com_outrosmenos4 = ['Reflexos']
+per_outrosmenos2 = -2
+per_com_outrosmenos2 = ['Acrobacia', 'Prestidigitação']
+per_outros2 = 2
+per_com_outros2 = ['Fortitude', 'Feitiçaria', 'Pontaria']
+per_outros4 = 4
+per_com_outros4 = ['Atletismo', 'Luta']
+per_outros6 = 6
+per_com_outros6 = ['Artesão']
+per_outros7 = 7
+per_com_outros7 = ['Ferreiro']
+per_kukan = adicional_kukan.get(kukan_no_kyoka_atual, 0)
+per_com_kukan = ['Luta']
+
+st.sidebar.subheader('Debugging')
+st.sidebar.write(per_kukan)
+
+# 1) mapa tolerante de rótulos de atributo -> modificador
+attr_mod_map = {
+    "for": mod(For), "força": mod(For), "forca": mod(For), "str": mod(For),
+    "des": mod(Des), "dex": mod(Des), "destreza": mod(Des),
+    "con": mod(Con), "constituição": mod(Con), "constituicao": mod(Con),
+    "int": mod(Int), "inteligência": mod(Int), "inteligencia": mod(Int),
+    "sab": mod(Sab), "sabedoria": mod(Sab),
+    "car": mod(Car), "carisma": mod(Car),
+}
+
+# 2) normaliza nomes de colunas (com ou sem acento)
+col_pericia = "Pericia" if "Pericia" in df.columns else "Pericia"
+
+# 3) componentes
+df["ModAtrib"] = df["Atributo"].map(lambda s: attr_mod_map.get(str(s).strip().lower(), 0))
+df["LvlHalf"]  = nivel // 2
+df["Maestria"] = np.where(df[col_pericia].isin(per_com_maestria), maestria, 0)
+df['Especializacao'] = np.where(df[col_pericia].isin(per_com_especializacao), maestria//2, 0)
+df["Outros2"]   = np.where(df[col_pericia].isin(per_com_outros2), per_outros2, 0)
+df["Outros4"]   = np.where(df[col_pericia].isin(per_com_outros4), per_outros4, 0)
+df["Outros6"]   = np.where(df[col_pericia].isin(per_com_outros6), per_outros6, 0)
+df["Outros7"]   = np.where(df[col_pericia].isin(per_com_outros7), per_outros7, 0)
+df["Kukan"]     = np.where(df[col_pericia].isin(per_com_kukan), per_kukan, 0)
+df["Outrosmenos6"]   = np.where(df[col_pericia].isin(per_com_outrosmenos6), per_outrosmenos6, 0)
+df["Outrosmenos4"]   = np.where(df[col_pericia].isin(per_com_outrosmenos4), per_outrosmenos4, 0)
+df["Outrosmenos2"]   = np.where(df[col_pericia].isin(per_com_outrosmenos2), per_outrosmenos2, 0)
+
+
+# 4) total final
+df["Total"] = df["ModAtrib"] + df["LvlHalf"] + df["Maestria"] + df['Especializacao'] + df["Outros2"] + df["Outros4"] + df["Outros6"] + df["Outros7"]+ df["Outrosmenos6"]+ df["Outrosmenos4"]+ df["Outrosmenos2"]+df['Kukan']
+
+
+# ----- Col Pericias
+with col_pericias:
+    pericias_ui(df)
+
+
 #st.sidebar.write('arma atual: '+str(arma_atual))
 #st.sidebar.write('estilo oculto atual: '+str(estilo_oculto_atual))
 #st.sidebar.write('Status golpe descendente atual abaixo')
