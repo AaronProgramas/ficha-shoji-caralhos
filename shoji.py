@@ -464,17 +464,6 @@ def cast_corte_oculto_ritual():
 
     return res
 
-def cast_convergencia():
-	rols = dado(8, 3)
-	return {
-	"Habilidade": "Convergência, 血を流す",
-    "Custo": 1,
-	"Alcance": "12m",
-	"CD do TR": cd_do_tr,
-    "Descrição": "Converge legal",
-	"Rolagens": rols,
-	"Dano (3d8)": sum(rols)+mod(Int),
-	}
 
 # ---------------------------
 # LAYOUT
@@ -486,7 +475,7 @@ col_ficha, col_pericias, col_habs = st.columns([2, 3, 2], gap="large")
 st.sidebar.title('Shoji Yoshiro')
 st.sidebar.image('shoji.png')
 st.sidebar.subheader('Quem é O Homem?')
-st.sidebar.write('Shoji é o cara que bate na cara de piranha, corta carros ao meio e os krl.')
+st.sidebar.write('Shoji é o cara que bate na cara de bandido, corta carros ao meio e os krl.')
 st.sidebar.write('')
 st.sidebar.write('O literal maior assassino do mundo Jujutsu.')
 
