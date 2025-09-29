@@ -132,7 +132,7 @@ class ataque_armado:
             return {
             "Habilidade": "Lança Grande",
             "Alcance": "Pessoal",
-            "Descrição": "Cacetete PMERJ, perfeito pra agredir civis (CRIT)",
+            "Descrição": "Penetração tenebrosa com a LANÇA COLOSSAL (CRIT)",
             "Rolagem de Ataque": acerto,
             "Rolagens": crit_rols,
             "Dano": sum(crit_rols)+12,
@@ -141,7 +141,7 @@ class ataque_armado:
             return {
             "Habilidade": "Lança Grande",
             "Alcance": "Pessoal",
-            "Descrição": "Porrete estilo oriental",
+            "Descrição": "Estocada amaldiçoada com uma lança",
             "Rolagem de Ataque": acerto,
             "Rolagens": rols,
             "Dano": sum(rols)+12,
