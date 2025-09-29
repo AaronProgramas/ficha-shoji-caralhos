@@ -36,7 +36,7 @@ class ataque_armado:
             return {
             "Habilidade": "Espada Gancho",
             "Alcance": "Pessoal",
-            "Descrição": "Toma gancho de BANDIDO, piranha (CRIT)",
+            "Descrição": "Toma gancho de BANDIDO (CRIT)",
             "Rolagem de Ataque": acerto,
             "Rolagens": crit_rols,
             "Dano": sum(crit_rols)+12,
@@ -45,7 +45,7 @@ class ataque_armado:
             return {
             "Habilidade": "Espada Gancho",
             "Alcance": "Pessoal",
-            "Descrição": "Toma gancho, piranha",
+            "Descrição": "Toma gancho",
             "Rolagem de Ataque": acerto,
             "Rolagens": rols,
             "Dano": sum(rols)+12,
