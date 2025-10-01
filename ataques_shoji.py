@@ -29,15 +29,17 @@ class ataque_armado:
 
     def espada_gancho():
         rols = dado(8, 1)
-        acerto = dado(20)[0]+18
-        crit_threshold = 19+18 # 19 no dado, 18 somado, tem q bater a meta pra critar
+        roll_20 = dado(20)[0]
+        acerto = 18
+        crit_threshold = 19
         crit_rols = dado(8,6)
-        if acerto >= crit_threshold:
+        if roll_20 >= crit_threshold:
             return {
             "Habilidade": "Espada Gancho",
             "Alcance": "Pessoal",
-            "Descrição": "Toma gancho de BANDIDO (CRIT)",
-            "Rolagem de Ataque": acerto,
+            "Descrição": "Toma gancho de BANDIDO, piranha (CRIT)",
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": crit_rols,
             "Dano": sum(crit_rols)+12,
             }
@@ -45,23 +47,26 @@ class ataque_armado:
             return {
             "Habilidade": "Espada Gancho",
             "Alcance": "Pessoal",
-            "Descrição": "Toma gancho",
-            "Rolagem de Ataque": acerto,
+            "Descrição": "Toma gancho, piranha",
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": rols,
             "Dano": sum(rols)+12,
             }
         
     def espada_dupla():
         rols = dado(6, 3)
-        acerto = dado(20)[0]+19
-        crit_threshold = 19+19 # 19 no dado, 18 somado, tem q bater a meta pra critar
+        roll_20 = dado(20)[0]
+        acerto = 19
+        crit_threshold = 19
         crit_rols = dado(6,10)
-        if acerto >= crit_threshold:
+        if roll_20 >= crit_threshold:
             return {
             "Habilidade": "Espada Dupla",
             "Alcance": "Pessoal",
             "Descrição": "Quer duas? Então vai tomando FIRME (CRIT)",
-            "Rolagem de Ataque": acerto,
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": crit_rols,
             "Dano": sum(crit_rols)+12,
             }
@@ -70,22 +75,25 @@ class ataque_armado:
             "Habilidade": "Espada Gancho",
             "Alcance": "Pessoal",
             "Descrição": "Quer duas? Então vai tomando.",
-            "Rolagem de Ataque": acerto,
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": rols,
             "Dano": sum(rols)+12,
             }
         
     def espada_colossal():
         rols = dado(8, 3)
-        acerto = dado(20)[0]+18
-        crit_threshold = 20+18 # 19 no dado, 18 somado, tem q bater a meta pra critar
+        acerto = 18
+        roll_20 = dado(20)[0]
+        crit_threshold = 20
         crit_rols = dado(8,10)
-        if acerto >= crit_threshold:
+        if roll_20 >= crit_threshold:
             return {
             "Habilidade": "Espada Colossal",
             "Alcance": "Pessoal",
             "Descrição": "Quer o meu colosso? (CRIT)",
-            "Rolagem de Ataque": acerto,
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": crit_rols,
             "Dano": sum(crit_rols)+12,
             }
@@ -94,22 +102,25 @@ class ataque_armado:
             "Habilidade": "Espada Colossal",
             "Alcance": "Pessoal",
             "Descrição": "Quer ver o meu colossal?",
-            "Rolagem de Ataque": acerto,
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": rols,
             "Dano": sum(rols)+12,
             }
         
     def nunchako_pesado():
         rols = dado(8, 3)
-        acerto = dado(20)[0]+16
-        crit_threshold = 19+16 # 20 no dado, 16 somado, tem q bater a meta pra critar
+        roll_20 = dado(20)[0]
+        acerto = 16
+        crit_threshold = 19
         crit_rols = dado(8,10)
-        if acerto >= crit_threshold:
+        if roll_20 >= crit_threshold:
             return {
             "Habilidade": "Nunchaco Pesado",
             "Alcance": "Pessoal",
             "Descrição": "Cacetete PMERJ, perfeito pra agredir civis (CRIT)",
-            "Rolagem de Ataque": acerto,
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": crit_rols,
             "Dano": sum(crit_rols)+12,
             }
@@ -118,22 +129,25 @@ class ataque_armado:
             "Habilidade": "Nunchako Pesado",
             "Alcance": "Pessoal",
             "Descrição": "Porrete estilo oriental",
-            "Rolagem de Ataque": acerto,
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": rols,
             "Dano": sum(rols)+12,
             }
         
     def lanca_grande():
         rols = dado(8, 3)
-        acerto = dado(20)[0]+16
-        crit_threshold = 20+16 # 20 no dado, 16 somado, tem q bater a meta pra critar
+        roll_20 = dado(20)[0]
+        acerto = 16
+        crit_threshold = 20
         crit_rols = dado(8,10)
-        if acerto >= crit_threshold:
+        if roll_20 >= crit_threshold:
             return {
             "Habilidade": "Lança Grande",
             "Alcance": "Pessoal",
-            "Descrição": "Penetração tenebrosa com a LANÇA COLOSSAL (CRIT)",
-            "Rolagem de Ataque": acerto,
+            "Descrição": "Lança tenebrosa amaldiçoada (CRIT)",
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": crit_rols,
             "Dano": sum(crit_rols)+12,
             }
@@ -141,23 +155,26 @@ class ataque_armado:
             return {
             "Habilidade": "Lança Grande",
             "Alcance": "Pessoal",
-            "Descrição": "Estocada amaldiçoada com uma lança",
-            "Rolagem de Ataque": acerto,
+            "Descrição": "Toma lança",
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": rols,
             "Dano": sum(rols)+12,
             }
         
     def machado_grande():
         rols = dado(6, 3)
-        acerto = dado(20)[0]+16
-        crit_threshold = 20+16 # 20 no dado, 16 somado, tem q bater a meta pra critar
+        roll_20 = dado(20)[0]
+        acerto = 16
+        crit_threshold = 20
         crit_rols = dado(8,10)
-        if acerto >= crit_threshold:
+        if roll_20 >= crit_threshold:
             return {
             "Habilidade": "Machado Grande",
             "Alcance": "Pessoal",
             "Descrição": "Machadada potente no teu roxo (CRIT)",
-            "Rolagem de Ataque": acerto,
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": crit_rols,
             "Dano": sum(crit_rols)+12,
             }
@@ -166,22 +183,25 @@ class ataque_armado:
             "Habilidade": "Machado Grande",
             "Alcance": "Pessoal",
             "Descrição": "Toma machado",
-            "Rolagem de Ataque": acerto,
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": rols,
             "Dano": sum(rols)+12,
             }
         
     def foice_grande():
         rols = dado(10, 3)
-        acerto = dado(20)[0]+16
-        crit_threshold = 20+16 # 20 no dado, 16 somado, tem q bater a meta pra critar
+        roll_20 = dado(20)[0]
+        acerto = 16
+        crit_threshold = 20
         crit_rols = dado(10,10)
-        if acerto >= crit_threshold:
+        if roll_20 >= crit_threshold:
             return {
             "Habilidade": "Foice Grande",
             "Alcance": "Pessoal",
             "Descrição": "Foice potente no teu roxo (CRIT)",
-            "Rolagem de Ataque": acerto,
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": crit_rols,
             "Dano": sum(crit_rols)+12,
             }
@@ -190,22 +210,25 @@ class ataque_armado:
             "Habilidade": "Foice Grande",
             "Alcance": "Pessoal",
             "Descrição": "Toma foice",
-            "Rolagem de Ataque": acerto,
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": rols,
             "Dano": sum(rols)+12,
             }
         
     def soqueira():
         rols = dado(6, 3)
-        acerto = dado(20)[0]+16
-        crit_threshold = 20+16 # 20 no dado, 16 somado, tem q bater a meta pra critar
+        roll_20 = dado(20)[0]
+        acerto = 16
+        crit_threshold = 20
         crit_rols = dado(8,10)
-        if acerto >= crit_threshold:
+        if roll_20 >= crit_threshold:
             return {
             "Habilidade": "Soqueira",
             "Alcance": "Pessoal",
             "Descrição": "Socada potente no teu roxo (CRIT)",
-            "Rolagem de Ataque": acerto,
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": crit_rols,
             "Dano": sum(crit_rols)+12,
             }
@@ -214,22 +237,25 @@ class ataque_armado:
             "Habilidade": "Machado Grande",
             "Alcance": "Pessoal",
             "Descrição": "Toma soco",
-            "Rolagem de Ataque": acerto,
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": rols,
             "Dano": sum(rols)+12,
             }
         
     def cardume_de_adagas():
         rols = dado(4, 1)
-        acerto = dado(20)[0]+16
-        crit_threshold = 19+16 # 20 no dado, 16 somado, tem q bater a meta pra critar
+        roll_20 = dado(20)[0]
+        acerto = 16
+        crit_threshold = 19
         crit_rols = dado(4,6)
-        if acerto >= crit_threshold:
+        if roll_20 >= crit_threshold:
             return {
             "Habilidade": "Cardume de Adagas",
             "Alcance": "Pessoal",
             "Descrição": "Cardume potente entrando firme no teu roxo (CRIT)",
-            "Rolagem de Ataque": acerto,
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": crit_rols,
             "Dano": sum(crit_rols)+12,
             }
@@ -238,22 +264,25 @@ class ataque_armado:
             "Habilidade": "Cardume de Adagas",
             "Alcance": "Pessoal",
             "Descrição": "Toma uma porrada de adagas",
-            "Rolagem de Ataque": acerto,
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": rols,
             "Dano": sum(rols)+12,
             }
         
     def adaga_de_aparar():
         rols = dado(4, 1)
-        acerto = dado(20)[0]+16
-        crit_threshold = 19+16 # 20 no dado, 16 somado, tem q bater a meta pra critar
+        roll_20 = dado(20)[0]
+        acerto = 16
+        crit_threshold = 19
         crit_rols = dado(4,6)
-        if acerto >= crit_threshold:
+        if roll_20 >= crit_threshold:
             return {
             "Habilidade": "Adaga de Aparar",
             "Alcance": "Pessoal",
             "Descrição": "Cardume potente entrando firme no teu roxo (CRIT)",
-            "Rolagem de Ataque": acerto,
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": crit_rols,
             "Dano": sum(crit_rols)+12,
             }
@@ -262,7 +291,8 @@ class ataque_armado:
             "Habilidade": "Adaga de Aparar",
             "Alcance": "Pessoal",
             "Descrição": "Toma uma porrada de adagas",
-            "Rolagem de Ataque": acerto,
+            "D20": roll_20,
+            "Rolagem de Ataque": roll_20+acerto,
             "Rolagens": rols,
             "Dano": sum(rols)+12,
             }
