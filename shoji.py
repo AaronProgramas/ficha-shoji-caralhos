@@ -505,7 +505,7 @@ st.sidebar.write('O literal maior assassino do mundo Jujutsu.')
 st.sidebar.markdown('---')
 
 # Golpe Pessoal
-st.sidebar.title('Golpe Pessoal')
+st.sidebar.title('Golpe Pessoal (ainda n funciona)')
 def gp_elemental(default=False):
     return st.checkbox(label='Elemental (3PE, +3d6)',
                        key='gp_elemental_atual',
