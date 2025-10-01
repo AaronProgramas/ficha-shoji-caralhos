@@ -27,7 +27,8 @@ def rolar_pericia(nome: str, total: int) -> dict:
     d20 = random.randint(1, 20)
     return {
         "Habilidade": f"Perícia – {nome}",
-        "Rolagens": [d20],            # mostra o d20
+        "D20": d20,
+#        "Rolagens": [d20],            # mostra o d20
         "Ataque": d20 + int(total),   # 'show_result' exibe como Ataque/Teste
     }
 
@@ -148,7 +149,7 @@ def show_result(title: str, data: dict):
 
     with st.container(border=True):
         st.markdown(f"### {title}")
-
+        st.markdown('Alcance: '+(str(alcance)))
 
         descricao = (
             data.get("Descrição") or data.get("Descricao") or
@@ -167,8 +168,9 @@ def show_result(title: str, data: dict):
                 st.caption("Rolagens")
                 st.markdown(_dice_pills(rolls), unsafe_allow_html=True)
 
+
             chips = []
-            if alcance: chips.append(f"Alcance: {alcance}")
+            #if alcance: chips.append(f"Alcance: {alcance}")
             if efeito:  chips.append(f"Efeito: {efeito}")
             if chips:
                 st.markdown(_pills(chips), unsafe_allow_html=True)
@@ -176,8 +178,13 @@ def show_result(title: str, data: dict):
         with right:
             atk_total = data.get("Rolagem de Ataque") or data.get("Ataque") or data.get("Acerto")
             cd_tr     = data.get("CD do TR") or data.get("CD")
+            d20       = data.get("D20")
+
             if atk_total is not None:
-                st.metric("Rolagem Total", atk_total)
+                st.metric("D20/Total", str(d20)+'/'+str(atk_total))
+#                st.markdown(f'<div class="sec-label">{escape('D20')}</div>', unsafe_allow_html=True)
+#                st.markdown(f'<span class="die">{escape(str(d20))}</span></div>', unsafe_allow_html=True)
+
             if cd_tr is not None:
                 st.metric("CD do TR", cd_tr)
 
@@ -235,6 +242,7 @@ Uniforme = 8
 Escudo = 0
 Outros = 10
 CA = (CA_Natural+Uniforme+Escudo+Outros) # mod des n aplicavel
+RD = 7
 
 # Pontos de Vida - Manual; Pontos de energia =5*nivel+N(mod sab)
 PV = 99
@@ -314,7 +322,12 @@ arma_dano_faces = {
     'Adaga de Aparar (G 4)': 4,
 }
 
+def toggle_vantagem(default=False) -> bool:
+    return st.checkbox(label='Vantagem (ainda n funciona)',
+                       key='vantagem_atual',
+                       value=default)
 def cast_ataque_armado():
+    vantagem = vantagem_atual
     arma = arma_atual
     postura = postura_atual
     estilo = estilo_oculto_atual
@@ -464,6 +477,17 @@ def cast_corte_oculto_ritual():
 
     return res
 
+def cast_convergencia():
+	rols = dado(8, 3)
+	return {
+	"Habilidade": "Convergência, 血を流す",
+    "Custo": 1,
+	"Alcance": "12m",
+	"CD do TR": cd_do_tr,
+    "Descrição": "Converge legal",
+	"Rolagens": rols,
+	"Dano (3d8)": sum(rols)+mod(Int),
+	}
 
 # ---------------------------
 # LAYOUT
@@ -475,11 +499,30 @@ col_ficha, col_pericias, col_habs = st.columns([2, 3, 2], gap="large")
 st.sidebar.title('Shoji Yoshiro')
 st.sidebar.image('shoji.png')
 st.sidebar.subheader('Quem é O Homem?')
-st.sidebar.write('Shoji é o cara que bate na cara de bandido, corta carros ao meio e os krl.')
+st.sidebar.write('Shoji é o cara que bate na cara de piranha, corta carros ao meio e os krl.')
 st.sidebar.write('')
 st.sidebar.write('O literal maior assassino do mundo Jujutsu.')
+st.sidebar.markdown('---')
 
+# Golpe Pessoal
+st.sidebar.title('Golpe Pessoal')
+def gp_elemental(default=False):
+    return st.checkbox(label='Elemental (3PE, +3d6)',
+                       key='gp_elemental_atual',
+                       value=default)
 
+def gp_letal(default=False):
+    return st.checkbox(label='Letal (2PE, +2 margem de ameaça)',
+                       key='gp_letal_atual',
+                       value=default)
+def gp_preciso(default=False):
+    return st.checkbox(label='Preciso (1PE/2PE segundo uso adiante, vantagem)',
+                       key='gp_preciso_atual',
+                       value=default)
+with st.sidebar:
+    gp_elemental_atual = gp_elemental(default=False)
+    gp_letal_atual = gp_letal(default=False)
+    gp_preciso_atual = gp_preciso(default=False)
 # ----- Coluna Habilidades
 
 
@@ -500,6 +543,24 @@ def toggle_golpe_descendente(default=False) -> bool:
                        key='golpe_descendente_atual',
                        value=default)
 
+def toggle_erguer_guarda(default=False) -> bool:
+    return st.checkbox(label='Erguer Guarda',
+                       key='guarda_atual',
+                       value=default)
+
+emoji_ataque_armado = {
+    'Espada Gancho (G 4)': '🪝',   
+    'Espada Dupla (G 4)': '⚔️',
+    'Espada Colossal (G 4)': '🗡️',
+    'Nunchako Pesado (G 4)': '🥢',
+    'Lança Grande (G 4)': '𓐬',
+    'Machado Grande (G 4)': '🪓',
+    'Foice Grande (G 4) Afiada': '𓌳',
+    'Soqueira (G 4)(Aç.B. TP 6m 1PE)': '👊',
+    'Cardume de Adagas (G 3)': '🗡𓆝🗡𓆟🗡𓆝',
+    'Adaga de Aparar (G 4)': '🗡',
+}
+
 def select_ca_outros(default: int = 0, min_value: int = -50, max_value: int = 50) -> int:
     # usa o último valor salvo como default nos reruns
     val = int(st.session_state.get('ca_outros_atual', default))
@@ -513,15 +574,35 @@ def select_ca_outros(default: int = 0, min_value: int = -50, max_value: int = 50
         format="%d",
     )
 
+def select_rd_outros(default: int = 0, min_value: int = -50, max_value: int = 50) -> int:
+    # usa o último valor salvo como default nos reruns
+    val = int(st.session_state.get('rd_outros_atual', default))
+    return st.number_input(
+        label='Modificadores de RD extra',
+        value=val,
+        step=1,
+        min_value=min_value,
+        max_value=max_value,
+        key='rd_outros_atual',
+        format="%d",
+    )
+
 with col_pericias:
-    per1, per2 = st.columns([5,2])
+    per1, per2, per3 = st.columns([3,2,2])
     with per1:
         st.subheader('Perícias')
     with per2:
-        kukan_no_kyoka_atual = escolher_kukan_no_kyoka(kukan)
+        ca_outros_atual = select_ca_outros(default=0)
+        #kukan_no_kyoka_atual = escolher_kukan_no_kyoka(kukan)
+    with per3:
+        rd_outros_atual = select_rd_outros(default=0)
 
 with col_habs:
-    st.subheader("Buffs/Armas")
+    a1, a2 = st.columns(2)
+    with a1:
+        st.subheader("Buffs/Armas")
+    with a2:
+        vantagem_atual = toggle_vantagem(default=False)
     # Botoes e os krl
     b1, b2 = st.columns(2)
     with b1:
@@ -532,10 +613,13 @@ with col_habs:
     with b21:
         arma_atual = escolher_arma(armas)
     with b22:
-        ca_outros_atual = select_ca_outros(default=0)
+        #ca_outros_atual = select_ca_outros(default=0)
+        kukan_no_kyoka_atual = escolher_kukan_no_kyoka(kukan)
     b31, b32 = st.columns(2)
     with b31:
         golpe_descendente_atual = toggle_golpe_descendente(default=False)
+    with b32:
+        guarda_atual = toggle_erguer_guarda(default=False)
 #    with b32:
 #        kukan_no_kyoka_atual = escolher_kukan_no_kyoka(kukan)
     
@@ -547,13 +631,13 @@ with col_habs:
 #    c5, c6 = st.columns(2)
 
     clicked = None
-    if c1.button("Ataque Armado", use_container_width=True):
+    if c1.button(emoji_ataque_armado.get(arma_atual)+" Ataque Armado", use_container_width=True):
         clicked = ("Ataque Armado", cast_ataque_armado())
-    if c2.button("Execução Silenciosa", use_container_width=True):
+    if c2.button("🤫 Execução Silenciosa", use_container_width=True):
         clicked = ("Execução Silenciosa", cast_execucao_silenciosa())
-    if c3.button("Corte Oculto", use_container_width=True):
+    if c3.button("🌀 Corte Oculto", use_container_width=True):
         clicked = ("Corte Oculto", cast_corte_oculto())
-    if c4.button("Corte Oculto - Ritual", use_container_width=True):
+    if c4.button("🌀 Corte Oculto - Ritual", use_container_width=True):
         clicked = ("Corte Oculto - Ritual (Ação completa)", cast_corte_oculto_ritual())
 #    if c5.button("Placeholder 2", use_container_width=True):
 #        clicked = ("Turbilhão de Sangue", cast_turbilhao_de_sangue())
@@ -597,6 +681,34 @@ def mod_ca_postura() -> int:
     
 modificadores_ca = mod_ca_golpe_descendente() + mod_ca_postura() + ca_outros_atual
 
+def mod_rd_adagas() -> int:
+    if arma_atual == 'Cardume de Adagas (G 3)':
+        return 4*maestria
+    elif arma_atual == 'Adaga de Aparar (G 4)':
+        return 4*maestria
+    else:
+        return 0
+    
+acerto_armas = {
+    'Espada Gancho (G 4)': 18,
+    'Espada Dupla (G 4)': 19,
+    'Espada Colossal (G 4)': 18,
+    'Nunchako Pesado (G 4)': 16,
+    'Lança Grande (G 4)': 16,
+    'Machado Grande (G 4)': 16,
+    'Foice Grande (G 4) Afiada': 16,
+    'Soqueira (G 4)(Aç.B. TP 6m 1PE)': 16,
+    'Cardume de Adagas (G 3)': 16,
+    'Adaga de Aparar (G 4)': 16,    
+}
+
+def mod_rd_guarda() -> int:
+    if guarda_atual is True:
+        return acerto_armas.get(arma_atual) + (nivel//2) + adicional_kukan.get(kukan_no_kyoka_atual)
+    else:
+        return 0
+
+modificadores_rd = mod_rd_adagas()+mod_rd_guarda()+rd_outros_atual
 # ----- Coluna Ficha (sidebar visual)
 with col_ficha:
     st.subheader("📜 Ficha do Personagem")
@@ -606,7 +718,7 @@ with col_ficha:
         c1.metric("Nível", nivel)
         c2.metric(f"Maestria", maestria)
         c3.metric("CA Base/CA Atual", str(CA)+'/'+str(CA+modificadores_ca))
-        c1.metric("PV", PV)
+        c1.metric("PV/RD", str(PV)+'/'+str(RD+modificadores_rd))
         c2.metric("PE", PE)
         c3.metric("PE Maximo (Armazenado)", PE_maximo_armazenado)
 
@@ -710,8 +822,9 @@ with col_pericias:
 
 
 #st.sidebar.write('arma atual: '+str(arma_atual))
-#st.sidebar.write('estilo oculto atual: '+str(estilo_oculto_atual))
-#st.sidebar.write('Status golpe descendente atual abaixo')
+#st.sidebar.write('adicional kukan: '+str(adicional_kukan.get(kukan_no_kyoka_atual)))
+#st.sidebar.write('acerto armas: '+str(acerto_armas.get(arma_atual)))
+#st.sidebar.write('mod rd guarda: '+str(mod_rd_guarda()))
 #st.sidebar.write(golpe_descendente_atual)
 #st.sidebar.write('CA atual abaixo')
 #st.sidebar.write(CA+modificadores_ca)
